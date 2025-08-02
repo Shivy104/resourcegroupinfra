@@ -13,7 +13,7 @@ steps:
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'my-azure-connection'   # <-- Jo naam diya hai service connection create karte waqt
-    scriptType: 'bash'
+    scriptType: 'ps'
     scriptLocation: 'inlineScript'
     inlineScript: |
       echo "Checking Azure connection from custom agent..."
