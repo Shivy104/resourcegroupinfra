@@ -1,0 +1,63 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+
+pool:
+  name: papapool
+
+variables:
+  TF_VERSION: '1.5.7'
+
+steps:
+
+# Terraform install karne wala step (sabse pehla step)
+- powershell: |
+    $terraformVersion = "$(TF_VERSION)"
+    $zipFile = "terraform_${terraformVersion}_windows_amd64.zip"
+    $url = "https://releases.hashicorp.com/terraform/$terraformVersion/$zipFile"
+    $installDir = "$env:USERPROFILE\terraform"
+
+    Write-Host "Downloading Terraform version $terraformVersion from $url"
+    Invoke-WebRequest -Uri $url -OutFile $zipFile -UseBasicParsing
+
+    if (Test-Path $installDir) {
+      Remove-Item -Recurse -Force $installDir
+    }
+    New-Item -ItemType Directory -Path $installDir | Out-Null
+
+    Write-Host "Extracting Terraform to $installDir"
+    Expand-Archive -Path $zipFile -DestinationPath $installDir -Force
+
+    Write-Host "Adding Terraform to PATH for current session"
+    $env:PATH = "$installDir;$env:PATH"
+
+    Write-Host "Terraform version:"
+    terraform version
+  displayName: 'Install Terraform (Windows)'
+
+# Azure login step
+- task: AzureCLI@2
+  displayName: 'Login to Azure'
+  inputs:
+    azureSubscription: 'my-azure-connection'
+    scriptType: 'ps'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az account show
+
+# Terraform commands (PowerShell ke through chalao taaki PATH recognize ho)
+- powershell: terraform init
+  displayName: 'Terraform Init'
+  workingDirectory: $(Build.SourcesDirectory)
+
+- powershell: terraform plan
+  displayName: 'Terraform Plan'
+  workingDirectory: $(Build.SourcesDirectory)
+
+- powershell: terraform apply -auto-approve
+  displayName: 'Terraform Apply'
+  workingDirectory: $(Build.SourcesDirectory)
