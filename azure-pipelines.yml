@@ -1,6 +1,8 @@
 trigger: none
 
 
+pool: SwimmingPool
+
 - task: TerraformInstaller@1
   inputs:
     terraformVersion: 'latest'
