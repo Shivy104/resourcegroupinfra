@@ -1,58 +1,19 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+trigger: none
 
-trigger:
-- none
 
-pool:
-  name: papapool
-
-variables:
-  TF_VERSION: '1.5.7'
-
-steps:
-
-- powershell: |
-    $terraformVersion = "$(TF_VERSION)"
-    $zipFile = "terraform_$terraformVersion_windows_amd64.zip"
-    $url = "https://releases.hashicorp.com/terraform/$terraformVersion/$zipFile"
-    $installDir = "$env:USERPROFILE\terraform"
-
-    Write-Host "Downloading Terraform $terraformVersion..."
-    Invoke-WebRequest -Uri $url -OutFile $zipFile
-
-    Write-Host "Extracting Terraform..."
-    Expand-Archive -Path $zipFile -DestinationPath $installDir -Force
-
-    Write-Host "Adding Terraform to PATH for current session..."
-    $env:PATH = "$installDir;$env:PATH"
-
-    Write-Host "Terraform version:"
-    terraform version
-  displayName: 'Install Terraform (Windows)'
-
-- task: AzureCLI@2
-  displayName: 'Login to Azure'
+- task: TerraformInstaller@1
   inputs:
-    azureSubscription: 'my-azure-connection'
-    scriptType: 'ps'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      az account show
+    terraformVersion: 'latest'
 
-- powershell: |
-    terraform init
-  displayName: 'Terraform Init'
-  workingDirectory: $(Build.SourcesDirectory)
 
-- powershell: |
-    terraform plan
-  displayName: 'Terraform Plan'
-  workingDirectory: $(Build.SourcesDirectory)
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
 
-- powershell: |
-    terraform apply -auto-approve
-  displayName: 'Terraform Apply'
-  workingDirectory: $(Build.SourcesDirectory)
+
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    environmentServiceNameAzureRM: 'Azure subscription 1(212ab218-5df9-48bc-afac-cd9389093c1b)'
