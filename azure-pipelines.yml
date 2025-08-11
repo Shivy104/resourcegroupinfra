@@ -1,21 +1,19 @@
 trigger: none
 
-
 pool: SwimmingPool
 
-- task: TerraformInstaller@1
-  inputs:
-    terraformVersion: 'latest'
+steps:
+  - task: TerraformInstaller@1
+    inputs:
+      terraformVersion: 'latest'
 
+  - task: TerraformTask@5
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
 
-- task: TerraformTask@5
-  inputs:
-    provider: 'azurerm'
-    command: 'init'
-
-
-- task: TerraformTask@5
-  inputs:
-    provider: 'azurerm'
-    command: 'plan'
-    environmentServiceNameAzureRM: 'Azure subscription 1(212ab218-5df9-48bc-afac-cd9389093c1b)'
+  - task: TerraformTask@5
+    inputs:
+      provider: 'azurerm'
+      command: 'plan'
+      environmentServiceNameAzureRM: 'Azure subscription 1(212ab218-5df9-48bc-afac-cd9389093c1b)'
