@@ -3,18 +3,10 @@ trigger: none
 pool:
   name: SwimmingPool
 
-steps:
-- task: TerraformInstaller@1
-  inputs:
-    terraformVersion: '1.5.5'
-
-- task: AzureCLI@2
-  inputs:
-    azureSubscription: 'inorgspn'   # tera service connection name
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      terraform init
-      terraform plan
-      terraform apply -auto-approve
-  displayName: 'Run Terraform commands in Azure CLI'
+jobs:
+- job: TerraformJob   # job ka naam dena zaroori hai
+  steps:
+  - task: TerraformInstaller@1
+    inputs:
+      terraformVersion: 'latest'
+    displayName: 'Install Terraform'
