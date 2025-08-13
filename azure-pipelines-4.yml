@@ -1,2 +1,6 @@
 trigger: none
 
+pool: SwimmingPool
+
+steps:
+- script: echo "Hello from single-stage pipeline"
