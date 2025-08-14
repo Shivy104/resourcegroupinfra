@@ -3,6 +3,6 @@ trigger: none
 pool: SwimmingPool
 
 steps:
-  - task: TerraformInstaller@1
+- task: TerraformInstaller@1
   inputs:
     terraformVersion: 'latest'
