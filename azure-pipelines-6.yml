@@ -19,3 +19,10 @@ steps:
         backendAzureRmStorageAccountName: 'inorgsa'
         backendAzureRmContainerName: 'inorgsa'
         backendAzureRmKey: 'tf/terraform.tfstate'
+
+
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    environmentServiceNameAzureRM: 'Azure subscription 1(212ab218-5df9-48bc-afac-cd9389093c1b)'
