@@ -1,3 +1,25 @@
 trigger:
 - main
 - feature
+
+pool: SwimmingPool
+
+parameters:
+- name: environment # Required as first property.
+  displayName: Environment(dev/prod) # Human-readable name for the parameter.
+  type: string
+  default: dev
+  values: 
+    - dev
+    - prod
+
+stages:
+- stage: Build
+  displayName: Build
+  jobs: 
+  - job: TerraformInitFmtValidate
+    displayName: Terraform Init, Fmt, Validate Job
+    steps: 
+    - task: CmdLine@2
+      inputs:
+        script: 'echo Hello world'
