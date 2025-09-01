@@ -1,0 +1,7 @@
+trigger: none
+
+pool: SwimmingPool
+
+steps:
+- script: echo "Hello World from Self-Hosted Agent!"
+  displayName: "Print message"
